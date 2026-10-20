@@ -49,26 +49,20 @@ def home():
 
 @app.post("/add_student")
 def add_student(student: Student):
-    
     student_data = student
-    
-    
-    
-    
     connection = db_connection()
-    connection= connection.cursor()
-    connection.execute(
+    cursor = connection.cursor()
+    cursor.execute(
         """ INSERT INTO students (name, age, gender, email, school) VALUES (?, ?, ?, ?, ?)""",
-        
-    (
-        student_data.name,
-        student_data.age,   
-        student_data.gender,
-        student_data.email,
-        student_data.school
-        
-        
-    ))
+        (
+            student_data.name,
+            student_data.age,
+            student_data.gender,
+            student_data.email,
+            student_data.school,
+        ),
+    )
     connection.commit()
+    cursor.close()
     connection.close()
-    return{"message":"student added successfully "}
+    return {"message": "student added successfully"}

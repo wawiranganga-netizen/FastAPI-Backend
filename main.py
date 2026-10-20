@@ -6,10 +6,14 @@ app = FastAPI()
 
 
 def db_connection():
-    db_name = "ronny.db"
-    connection = sqlite3.connect(db_name)
-    connection.row_factory = sqlite3.Row
-    return connection
+    try:
+      db_name = "eunice.db"
+      connection = sqlite3.connect(db_name)
+      connection.row_factory = sqlite3.Row
+      return connection
+    except sqlite3.Error as e:
+        print('Error connecting to database:', e)
+        return None
 
 
 def create_table():
@@ -68,5 +72,16 @@ def add_student(student: Student):
     )
     connection.commit()
     connection.close()
-    return {"message": "Student added successfully"}    
+    return {"message": "Student added successfully", "student": student_data.dict()}
+
+@app.get("/get_students")
+def get_students():
+    connection= db_connection()
+    conn= connection.cursor()
+    conn.execute("SELECT * FROM students")
+    students = conn.fetchall()
+    return {"students": [dict(student) for student in students]}
+
+
+
     
