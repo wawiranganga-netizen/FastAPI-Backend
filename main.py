@@ -84,4 +84,26 @@ def get_students():
 
 
 
+
+
+
+@app.get("/student/{student_id}")
+def get_student_by_id(student_id: int):
+  connection = db_connection()
+  conn = connection.cursor()
+  conn.execute("SELECT * FROM students WHERE id = ?", (student_id,))
+  student = conn.fetchone()
+  connection.close()
+  return {"student": dict(student) }
+
+
+@app.get("/students")
+def get_all_students():
+    connection = db_connection()
+    conn = connection.cursor()
+    conn.execute("SELECT * FROM students")
+    students = conn.fetchall()
+    connection.close()
     
+   
+    return {"students": (student) for student in students}
